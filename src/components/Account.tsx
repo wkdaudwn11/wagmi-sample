@@ -1,51 +1,80 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { useAccount, useDisconnect, useConnect } from 'wagmi';
+import React from 'react';
+import {
+  useAccount,
+  useDisconnect,
+  useConnect,
+  useBalance,
+  type Connector,
+} from 'wagmi';
+import { formatEther } from 'viem';
+
+import Button from '@/components/Button';
+import Spinner from '@/components/Spinner';
 
 const Account = () => {
-  const { connectors, connect } = useConnect();
-  const { address, status } = useAccount();
+  const { connectors, connect, isPending, error, reset } = useConnect();
   const { disconnect } = useDisconnect();
 
-  const isLoading = useMemo(
-    () => status === 'connecting' || status === 'reconnecting',
-    [status],
-  );
+  const { address, chain, status, isConnected } = useAccount();
+  const balance = useBalance({
+    address,
+  });
+
+  const handleConnect = (connector: Connector) => () => {
+    reset();
+    connect({ connector });
+  };
 
   return (
-    <div className="max-w-xl w-full flex-col items-center justify-center gap-4 p-4 font-mono text-sm lg:flex border">
-      {isLoading && (
-        <div>
-          <p>loading...</p>
+    <div className="flex flex-col items-center justify-center w-[640px] gap-4 p-4 font-mono text-sm border">
+      <div className="flex flex-col w-full gap-4">
+        <div className="flex items-center justify-between w-full">
+          <p>Status</p>
+          <p>{status}</p>
         </div>
-      )}
-      {address ? (
-        <>
-          <p>Wallet address: {address}</p>
-          <button
-            className="border p-2"
-            type="button"
-            onClick={() => disconnect()}
-          >
-            Disconnect
-          </button>
-        </>
-      ) : (
-        <>
-          {connectors.map((connector) => (
-            <button
-              className="w-[100px] border p-2"
-              type="button"
+        <div className="flex items-center justify-between w-full">
+          <p>Wallet address</p>
+          <p>{isConnected ? address : ''}</p>
+        </div>
+        <div className="flex items-center justify-between w-full">
+          <p>Chain id</p>
+          <p>{isConnected ? chain?.id : ''}</p>
+        </div>
+        <div className="flex items-center justify-between w-full">
+          <p>Network Name</p>
+          <p>{isConnected ? chain?.name : ''}</p>
+        </div>
+        <div className="flex items-center justify-between w-full">
+          <p>Balance</p>
+          <p>
+            {isConnected ? formatEther(balance?.data?.value || BigInt(0)) : ''}
+            &nbsp;ETH
+          </p>
+        </div>
+      </div>
+
+      {isConnected && <Button onClick={() => disconnect()}>Disconnect</Button>}
+
+      {!isConnected &&
+        connectors.map((connector) => (
+          <>
+            <Button
               key={connector.uid}
-              disabled={isLoading}
-              onClick={() => connect({ connector })}
+              isLoading={isPending}
+              onClick={handleConnect(connector)}
             >
               {connector.name}
-            </button>
-          ))}
-        </>
-      )}
+            </Button>
+            {error && (
+              <div className="flex flex-col gap-2 text-red-500 text-xs">
+                <p>{error.name}</p>
+                <p>{error.message}</p>
+              </div>
+            )}
+          </>
+        ))}
     </div>
   );
 };
