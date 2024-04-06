@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAccount, useSwitchChain } from 'wagmi';
 
 import Button from '@/components/Button';
@@ -9,7 +9,7 @@ import ErrorBox from '@/components/ErrorBox';
 import Layout from '@/components/Layout';
 
 const Network = () => {
-  const { chains, error, isPending, switchChain } = useSwitchChain();
+  const { chains, error, isPending, switchChain, reset } = useSwitchChain();
   const {
     chain: walletChain,
     connector: walletConnector,
@@ -19,6 +19,10 @@ const Network = () => {
   const handleSwitch = (chainId: number) => () => {
     switchChain({ chainId });
   };
+
+  useEffect(() => {
+    reset();
+  }, [isConnected, reset]);
 
   return (
     <Layout>
@@ -63,6 +67,11 @@ const Network = () => {
               )}
             </div>
           </Card.Row>
+        )}
+        {!isConnected && (
+          <Button disabled onClick={() => console.log('switch network')}>
+            Switch network
+          </Button>
         )}
       </Card.Section>
     </Layout>

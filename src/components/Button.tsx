@@ -12,7 +12,7 @@ type Props = {
 
 const Button = ({ children, disabled, isError, isLoading, onClick }: Props) => (
   <button
-    className={`w-full h-12 bg-slate-950 disabled:opacity-60 rounded-lg disabled:cursor-not-allowed ${isError ? 'border border-red-500' : ''}`}
+    className={`w-full h-12 bg-slate-950 disabled:opacity-60 rounded-lg disabled:cursor-not-allowed hover:scale-[1.02] transition-all ${isError ? 'border border-red-500' : ''}`}
     type="button"
     disabled={disabled || isLoading}
     onClick={onClick}
