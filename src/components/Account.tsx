@@ -11,10 +11,11 @@ import {
 import { formatEther } from 'viem';
 
 import Button from '@/components/Button';
-import Spinner from '@/components/Spinner';
+import Card from '@/components/Card';
 
 const Account = () => {
-  const { connectors, connect, isPending, error, reset } = useConnect();
+  const { connectors, connect, isPending, isError, error, reset } =
+    useConnect();
   const { disconnect } = useDisconnect();
 
   const { address, chain, status, isConnected } = useAccount();
@@ -28,32 +29,33 @@ const Account = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-[640px] gap-4 p-4 font-mono text-sm border">
-      <div className="flex flex-col w-full gap-4">
-        <div className="flex items-center justify-between w-full">
-          <p>Status</p>
-          <p>{status}</p>
-        </div>
-        <div className="flex items-center justify-between w-full">
-          <p>Wallet address</p>
-          <p>{isConnected ? address : ''}</p>
-        </div>
-        <div className="flex items-center justify-between w-full">
-          <p>Chain id</p>
-          <p>{isConnected ? chain?.id : ''}</p>
-        </div>
-        <div className="flex items-center justify-between w-full">
-          <p>Network Name</p>
-          <p>{isConnected ? chain?.name : ''}</p>
-        </div>
-        <div className="flex items-center justify-between w-full">
-          <p>Balance</p>
-          <p>
-            {isConnected ? formatEther(balance?.data?.value || BigInt(0)) : ''}
-            &nbsp;ETH
-          </p>
-        </div>
-      </div>
+    <div className="flex flex-col items-center justify-center w-[640px] gap-4 p-4 text-sm border">
+      <Card.Section>
+        <Card.Row>
+          <Card.Key>Status</Card.Key>
+          <Card.Value>{status}</Card.Value>
+        </Card.Row>
+        <Card.Row>
+          <Card.Key>Wallet address</Card.Key>
+          <Card.Value>{isConnected ? address : ''}</Card.Value>
+        </Card.Row>
+        <Card.Row>
+          <Card.Key>Chain id</Card.Key>
+          <Card.Value>{isConnected ? chain?.id : ''}</Card.Value>
+        </Card.Row>
+        <Card.Row>
+          <Card.Key>Network Name</Card.Key>
+          <Card.Value>{isConnected ? chain?.name : ''}</Card.Value>
+        </Card.Row>
+        <Card.Row>
+          <Card.Key>Balance</Card.Key>
+          <Card.Value>
+            {isConnected
+              ? `${formatEther(balance?.data?.value || BigInt(0))} ETH`
+              : ''}
+          </Card.Value>
+        </Card.Row>
+      </Card.Section>
 
       {isConnected && <Button onClick={() => disconnect()}>Disconnect</Button>}
 
@@ -62,6 +64,7 @@ const Account = () => {
           <>
             <Button
               key={connector.uid}
+              isError={isError}
               isLoading={isPending}
               onClick={handleConnect(connector)}
             >

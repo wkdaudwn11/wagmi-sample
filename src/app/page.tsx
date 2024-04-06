@@ -9,7 +9,7 @@ const Home = () => {
   const { isMount } = useMount();
 
   return (
-    <main className="flex items-center justify-center w-full min-w-[700px] min-h-[100vh] bg-slate-800">
+    <main className="flex items-center justify-center w-full min-w-[700px] min-h-[100vh] bg-slate-800 font-mono">
       {!isMount && <Spinner size={8} />}
       {isMount && <Account />}
     </main>
