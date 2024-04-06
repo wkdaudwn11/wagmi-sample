@@ -12,14 +12,14 @@ type Props = {
 
 const Button = ({ children, disabled, isError, isLoading, onClick }: Props) => (
   <button
-    className={`w-full h-12 bg-slate-950 disabled:bg-slate-900 disabled:cursor-not-allowed ${isError ? 'border border-red-500' : ''}`}
+    className={`w-full h-12 bg-slate-950 disabled:opacity-60 rounded-lg disabled:cursor-not-allowed ${isError ? 'border border-red-500' : ''}`}
     type="button"
     disabled={disabled || isLoading}
     onClick={onClick}
   >
     <div className="flex items-center justify-center gap-4">
       {children}
-      {isLoading && <Spinner />}
+      {isLoading && <Spinner size={4} />}
     </div>
   </button>
 );

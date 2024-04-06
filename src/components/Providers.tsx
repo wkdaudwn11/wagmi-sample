@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { http, createConfig, WagmiProvider } from 'wagmi';
-import { base, mainnet } from 'wagmi/chains';
+import { mainnet, sepolia } from 'wagmi/chains';
 // import { injected, metaMask, safe, walletConnect } from 'wagmi/connectors';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
@@ -11,7 +11,7 @@ type Props = {
 };
 
 export const config = createConfig({
-  chains: [mainnet, base],
+  chains: [mainnet, sepolia],
   connectors: [
     // injected(),
     //   walletConnect({ projectId }),
@@ -20,7 +20,7 @@ export const config = createConfig({
   ],
   transports: {
     [mainnet.id]: http(),
-    [base.id]: http(),
+    [sepolia.id]: http(),
   },
 });
 
