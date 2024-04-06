@@ -5,7 +5,9 @@ type Props = {
 };
 
 export const Section = ({ children }: Props) => (
-  <div className="flex flex-col w-full gap-4">{children}</div>
+  <div className="flex flex-col w-full gap-4 p-4 border border-neutral-100">
+    {children}
+  </div>
 );
 
 export const Row = ({ children }: Props) => (

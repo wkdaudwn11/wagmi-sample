@@ -12,6 +12,7 @@ import { formatEther } from 'viem';
 
 import Button from '@/components/Button';
 import Card from '@/components/Card';
+import Layout from '@/components/Layout';
 
 const Account = () => {
   const { connectors, connect, isPending, isError, error, reset } =
@@ -29,7 +30,7 @@ const Account = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-[640px] gap-4 p-4 text-sm border">
+    <Layout>
       <Card.Section>
         <Card.Row>
           <Card.Key>Status</Card.Key>
@@ -55,30 +56,33 @@ const Account = () => {
               : ''}
           </Card.Value>
         </Card.Row>
+        <Card.Row>
+          {isConnected && (
+            <Button onClick={() => disconnect()}>Disconnect</Button>
+          )}
+
+          {!isConnected &&
+            connectors.map((connector) => (
+              <>
+                <Button
+                  key={connector.uid}
+                  isError={isError}
+                  isLoading={isPending}
+                  onClick={handleConnect(connector)}
+                >
+                  {connector.name}
+                </Button>
+                {error && (
+                  <div className="flex flex-col gap-2 text-red-500 text-xs">
+                    <p>{error.name}</p>
+                    <p>{error.message}</p>
+                  </div>
+                )}
+              </>
+            ))}
+        </Card.Row>
       </Card.Section>
-
-      {isConnected && <Button onClick={() => disconnect()}>Disconnect</Button>}
-
-      {!isConnected &&
-        connectors.map((connector) => (
-          <>
-            <Button
-              key={connector.uid}
-              isError={isError}
-              isLoading={isPending}
-              onClick={handleConnect(connector)}
-            >
-              {connector.name}
-            </Button>
-            {error && (
-              <div className="flex flex-col gap-2 text-red-500 text-xs">
-                <p>{error.name}</p>
-                <p>{error.message}</p>
-              </div>
-            )}
-          </>
-        ))}
-    </div>
+    </Layout>
   );
 };
 
