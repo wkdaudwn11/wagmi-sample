@@ -11,7 +11,7 @@ const Home = () => {
 
   return (
     <main className="flex items-center justify-center w-full min-w-[700px] min-h-[100vh] bg-slate-800 font-mono">
-      {!isMount && <Spinner size={8} />}
+      {!isMount && <Spinner />}
       {isMount && (
         <div className="flex flex-col gap-8">
           <Account />

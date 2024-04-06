@@ -19,7 +19,7 @@ const Button = ({ children, disabled, isError, isLoading, onClick }: Props) => (
   >
     <div className="flex items-center justify-center gap-4">
       {children}
-      {isLoading && <Spinner size={4} />}
+      {isLoading && <Spinner />}
     </div>
   </button>
 );

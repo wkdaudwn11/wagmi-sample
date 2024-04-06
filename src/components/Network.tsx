@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useAccount, useSwitchChain } from 'wagmi';
 
 import Button from '@/components/Button';
@@ -9,8 +9,6 @@ import ErrorBox from '@/components/ErrorBox';
 import Layout from '@/components/Layout';
 
 const Network = () => {
-  const [selectedChainId, setSelectedChainId] = useState(-1);
-
   const { chains, error, isPending, switchChain } = useSwitchChain();
   const {
     chain: walletChain,
@@ -18,8 +16,7 @@ const Network = () => {
     isConnected,
   } = useAccount();
 
-  const handleSwitchClick = (chainId: number) => () => {
-    setSelectedChainId(chainId);
+  const handleSwitch = (chainId: number) => () => {
     switchChain({ chainId });
   };
 
@@ -42,26 +39,28 @@ const Network = () => {
         {isConnected && (
           <Card.Row>
             <div className="flex flex-col w-full gap-4">
-              {chains.map((chain) => (
-                <>
-                  <Button
-                    key={chain.id}
-                    disabled={chain.id === walletChain?.id}
-                    isLoading={isPending && chain.id === selectedChainId}
-                    isError={!!error && chain.id === selectedChainId}
-                    onClick={handleSwitchClick(chain.id)}
-                  >
-                    Switch {chain.name}
-                    {chain.id === walletChain?.id && ' (active)'}
-                  </Button>
-                  {error && chain.id === selectedChainId && (
-                    <ErrorBox>
-                      <p>{error.name}</p>
-                      <p>{error.message}</p>
-                    </ErrorBox>
-                  )}
-                </>
-              ))}
+              {chains.map(
+                (chain) =>
+                  chain.id !== walletChain?.id && (
+                    <>
+                      <Button
+                        key={chain.id}
+                        disabled={isPending}
+                        isLoading={isPending}
+                        isError={!!error}
+                        onClick={handleSwitch(chain.id)}
+                      >
+                        Switch to {chain.name}
+                      </Button>
+                      {error && (
+                        <ErrorBox>
+                          <p>{error.name}</p>
+                          <p>{error.message}</p>
+                        </ErrorBox>
+                      )}
+                    </>
+                  ),
+              )}
             </div>
           </Card.Row>
         )}
